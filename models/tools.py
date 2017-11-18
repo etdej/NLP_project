@@ -1,3 +1,6 @@
+import comet_ml
+from comet_ml import Experiment
+
 import torch
 from torch.autograd import Variable
 import numpy as np
@@ -38,12 +41,10 @@ def evaluate(model, data_iter, batch_size, alphabet_size, l0):
     return correct / float(total)
 
 
-def training_loop(batch_size, alphabet_size, l0, num_epochs, model, loss_, optim,
-                  training_iter, validation_iter, train_eval_iter):
+def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, model, loss_, optim,
+                  training_iter, validation_iter, train_eval_iter, comet_exp=None):
     step = 0
     epoch = 0
-    #total_batches = int(len(training_set) / batch_size)
-    total_batches = int(200 / batch_size)
 
     print("total_bat", total_batches)
     while epoch <= num_epochs:
@@ -63,6 +64,10 @@ def training_loop(batch_size, alphabet_size, l0, num_epochs, model, loss_, optim
 
         output = model(vectors)
         lossy = loss_(output, labels.long())
+        
+        if comet_exp:
+            comet_exp.log_metric("loss", lossy.data.numpy().mean())
+ 
         lossy.backward()
 #        torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
         optim.step()

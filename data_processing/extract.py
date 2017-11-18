@@ -16,24 +16,25 @@ from sklearn.model_selection import train_test_split
 from numpy import random
 import torch
 
-def dataGenerator(train_split=0.8,binary=False, max_length=1014):
+def dataGenerator(data_path, train_split=0.8,binary=False, max_length=1014):
 
     dataset = []
 
-    cwd = os.getcwd()
     for filename in ['pos', 'neg']:
-        file_dir = join(cwd, 'data', 'aclImdb', 'train', filename)
+        file_dir = join(data_path, 'aclImdb', 'train', filename)
         files = [f for f in listdir(file_dir) if isfile(join(file_dir, f))]
         for f in files:
             name = f.split('.')[0]
             name = name.split('_')
             id = name[0]
             rating = name[1]
-            if(binary):
-                if(filename=='pos'):
+            if(binary): 
+                if(filename=='pos'): 
                     rating=1
-                else:
+                else: 
                     rating=0
+            else:
+                rating= int(rating) -1
 
             path = join(file_dir, f)
             review = torch.zeros(max_length).long()
@@ -46,7 +47,7 @@ def dataGenerator(train_split=0.8,binary=False, max_length=1014):
                     else:
                         review[i] = indexing['UNK']
 
-                dataset.append({'review': review, 'rating': torch.IntTensor([int(rating) -  1])})
+                dataset.append({'review': review, 'rating': torch.IntTensor([rating])})
 
     #random split 0.8 / 0.2
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
