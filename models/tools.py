@@ -63,21 +63,25 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
         model.zero_grad()
 
         output = model(vectors)
-        lossy = loss_(output, labels.long())
+        #print(output.data.numpy())
+        
+        lossy = loss_(output.squeeze(), labels.float())
         
         if comet_exp:
             comet_exp.log_metric("loss", lossy.data.numpy().mean())
- 
+        
+#        print("loss :", lossy)
         lossy.backward()
 #        torch.nn.utils.clip_grad_norm(model.parameters(), 5.0)
         optim.step()
 
         if step % total_batches == 0:
-            if epoch % 5 == 0:
-                print("begin print")
-                print("Epoch %i; Step %i; Loss %f; Train acc: %f; Dev acc %f"
+            #if epoch % 5 == 0:
+            print("begin print")
+            print("Epoch %i; Step %i; Loss %f; Train acc: %f; Dev acc %f"
                       %(epoch, step, lossy.data[0],\
                         evaluate(model, train_eval_iter, batch_size, alphabet_size, l0),\
                         0))#evaluate(model, validation_iter, batch_size, alphabet_size, l0)))
             epoch += 1
         step += 1
+        print(step)
