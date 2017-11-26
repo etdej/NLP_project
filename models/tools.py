@@ -63,7 +63,7 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
         output = model(vectors)
         
         lossy = loss_(output.squeeze(), labels.float())
-        print(lossy.data[0])
+        #print(lossy.data[0])
         
         if comet_exp:
             comet_exp.log_metric("loss", lossy.data.numpy().mean())

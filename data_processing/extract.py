@@ -38,7 +38,7 @@ def dataGenerator(data_path, train_split=0.8,binary=False, max_length=1014):
 
             path = join(file_dir, f)
             review = torch.zeros(max_length).long()
-            with open(path, encoding='utf-8') as myfile:
+            with open(path) as myfile:
                 data = myfile.read()
                 for i in range(min(max_length,len(data))):
                     letter = data[i].lower()
