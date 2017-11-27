@@ -76,3 +76,45 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
 
     return dataset_train, dataset_val
+
+
+
+def data_iter(dataset, batch_size=32):
+    dataset_size = len(dataset)
+    start = -1 * batch_size
+    order = list(range(dataset_size))
+    random.shuffle(order)
+
+    while True:
+        start += batch_size
+        if start > dataset_size - batch_size:
+            # Start another epoch.
+            start = 0
+            random.shuffle(order)
+        batch_indices = order[start:start + batch_size]
+        yield [dataset[index] for index in batch_indices]
+
+# This is the iterator we use when we're evaluating our model.
+# It gives a list of batches that you can then iterate through.
+def eval_iter(source, batch_size):
+    batches = []
+    dataset_size = len(source)
+    start = -1 * batch_size
+    order = list(range(dataset_size))
+    random.shuffle(order)
+
+    while start < dataset_size - batch_size:
+        start += batch_size
+        batch_indices = order[start:start + batch_size]
+        batch = [source[index] for index in batch_indices]
+        if len(batch) == batch_size:
+            batches.append(batch)
+        else:
+            continue
+
+    return batches
+
+if __name__ == '__main__':
+    training_set, validation_set = dataGenerator()
+    print("length training_set : ", len(training_set))
+    print("length validation_set : ", len(validation_set))
