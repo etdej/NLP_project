@@ -44,7 +44,6 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
     dataloaded = np.loadtxt('Video_Games_5.txt',delimiter='\n', comments='\0',dtype=np.str)
     
     for rev in dataloaded: 
-        print('ouloulou')
         liste = re.split('"reviewText": ',rev)
         text= re.split(', "overall": ',liste[1])
         data = text[0]
@@ -69,8 +68,7 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
             else:
                 review[i] = index['UNK']
 
-        dataset.append({'review': review, 'rating': rating})
-        #dataset.append({'review': review, 'rating': torch.IntTensor([rating])})
+        dataset.append({'review': review, 'rating': torch.IntTensor([rating])})
 
     #random split 0.8 / 0.2
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
@@ -115,6 +113,6 @@ def eval_iter(source, batch_size):
     return batches
 
 if __name__ == '__main__':
-    training_set, validation_set = dataGenerator()
+    training_set, validation_set = dataGenerator2()
     print("length training_set : ", len(training_set))
     print("length validation_set : ", len(validation_set))
