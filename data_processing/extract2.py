@@ -57,9 +57,9 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
         else:
             rating= int(rating) -1
             
-        #review = torch.zeros(max_length).long()
+        review = torch.zeros(max_length).long()
         
-        review = np.zeros(max_length)
+        #review = np.zeros(max_length)
         
         for i in range(min(max_length,len(data))):
             letter = data[i].lower()
