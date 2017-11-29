@@ -31,19 +31,19 @@ altIndexing = { letter : i+p+1 for i,letter in enumerate(bigAlphabet)}
 bigIndexing.update(indexing)
 altIndexing.update(indexing)
 
-def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=1014, indexing=1):
+def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=1014, indexing_choice=0):
     
-    if(indexing==0):
+    if(indexing_choice==0):
         index = indexing
-    if(indexing==1):
+    if(indexing_choice==1):
         index = bigIndexing
-    if(indexing==2):
+    if(indexing_choice==2):
         index = altIndexing
 
     dataset = []
-    dataloaded = np.loadtxt('Video_Games_5.txt',delimiter='\n', comments='\0',dtype=np.str)
-    
+    dataloaded = np.loadtxt('first100lines.txt',delimiter='\n', comments='\0',dtype=np.str)
     for rev in dataloaded: 
+        
         liste = re.split('"reviewText": ',rev)
         text= re.split(', "overall": ',liste[1])
         data = text[0]
@@ -63,13 +63,13 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
         
         for i in range(min(max_length,len(data))):
             letter = data[i].lower()
+            
             if letter in alphabet:
                 review[i] = index[letter]
             else:
                 review[i] = index['UNK']
 
         dataset.append({'review': review, 'rating': torch.IntTensor([rating])})
-
     #random split 0.8 / 0.2
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
 
