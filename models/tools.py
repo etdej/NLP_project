@@ -29,8 +29,6 @@ def evaluate(model, data_iter, batch_size, alphabet_size, l0):
 
         output = model(vectors)
         
-#        print(vectors.data.numpy().sum(axis=2))
-        #_, predicted = torch.max(output, 1)
         predicted = (output.data > 0.5)
         
         total += len(labels)
@@ -63,7 +61,6 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
         output = model(vectors)
         
         lossy = loss_(output.squeeze(), labels.float())
-        print(lossy.data[0])
         
         if comet_exp:
             comet_exp.log_metric("loss", lossy.data.numpy().mean())
@@ -73,11 +70,12 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
         optim.step()
 
         if step % total_batches == 0:
-            #if epoch % 5 == 0:
-            print("begin print")
+            val_train = evaluate(model, train_eval_iter, batch_size, alphabet_size, l0)
+            val_val = evaluate(model, validation_iter, batch_size, alphabet_size, l0)
+            if comet_exp:
+                comet_exp.log_metric("val_train_acc", val_train)
+                comet_exp.log_metric("val_val_acc", val_val)
             print("Epoch %i; Step %i; Loss %f; Train acc: %f; Dev acc %f"
-                      %(epoch, step, lossy.data[0],\
-                        evaluate(model, train_eval_iter, batch_size, alphabet_size, l0),\
-                        evaluate(model, validation_iter, batch_size, alphabet_size, l0)))
+                      %(epoch, step, lossy.data[0], val_train, val_val))
             epoch += 1
         step += 1

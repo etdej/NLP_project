@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from data_processing.extract import *
+from data_processing.extract2 import *
 from models.char_CNN_Small import *
 from models.tools import *
 

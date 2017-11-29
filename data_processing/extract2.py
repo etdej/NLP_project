@@ -41,7 +41,7 @@ def dataGenerator2 (data_path= ' ', train_split=0.8,binary=False, max_length=101
         index = altIndexing
 
     dataset = []
-    dataloaded = np.loadtxt('first100lines.txt',delimiter='\n', comments='\0',dtype=np.str)
+    dataloaded = np.loadtxt(data_path+'amazon_reviews/reviews_Video_Games_5.txt',delimiter='\n', comments='\0',dtype=np.str)
     for rev in dataloaded: 
         
         liste = re.split('"reviewText": ',rev)

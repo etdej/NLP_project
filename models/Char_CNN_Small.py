@@ -17,7 +17,7 @@ class Char_CNN_Small(nn.Module):
         self.max_pool = nn.MaxPool1d(3)
         self.relu = nn.ReLU()
         self.selu = nn.SELU()
-        self.dropout = nn.Dropout(0)
+        self.dropout = nn.Dropout(0.5)
                 
         self.conv1 = nn.Conv1d(self.alphabet_size,4,7)
         self.conv2 = nn.Conv1d(4,8,7)
@@ -64,10 +64,10 @@ class Char_CNN_Small(nn.Module):
         
         out = self.linear1(out)
         out = self.selu(out)
-        # out = self.dropout(out)
+        out = self.dropout(out)
         out = self.linear2(out)
         out = self.selu(out)
-        # out = self.@out(out)
+        out = self.dropout(out)
        
 
         out = self.classifier(out)
