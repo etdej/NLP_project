@@ -62,8 +62,8 @@ save_path = '/home/ecd353/NLP_project/experiments/exp2_best.pth.tar'
 ## generate dataset
 print("generating dataset")
 data_path='/home/ecd353/NLP_project/data/'
-training_set, validation_set = dataGenerator(binary=True, max_length=hyper_params['l0'])
-test_set = dataGeneratorTest(binary=True, max_length=hyper_params['l0'])
+training_set, validation_set = dataGenerator(data_path+'train.txt', max_length=hyper_params['l0'])
+
 print("generating dataset done")
 
 # Build, initialize model
@@ -99,11 +99,14 @@ total_batches = int(len(training_set) / batch_size)
 tls.training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, model, loss, optimizer, 
               training_iter, validation_iter, train_eval_iter, save_path, comet, cuda=True)
 
+
+# Loading best model and calculating accuracy on test set
 tls.load_checkpoint(model, save_path)
+
+test_set = dataGeneratorTest(file_name=data_path+'test.txt', max_length=hyper_params['l0'])
 test_iter = test_iter(test_set, batch_size)
 test = tls.evaluate(model, test_iter, batch_size, hyper_params['alphabet_size'], hyper_params['l0'], cuda=True)
 print("Final test accuracy :  %f" %(test_acc))
-# In[ ]:
 
 
 
