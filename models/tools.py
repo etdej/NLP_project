@@ -101,7 +101,7 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
       		      'epoch': epoch,
                       'state_dict': model.state_dict(),
             	      'best_prec1': best_val,
-                      'optimizer' : optimizer.state_dict(),
+                      'optimizer' : optim.state_dict(),
         	}
 		
 		torch.save(state, save_file)

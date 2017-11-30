@@ -9,6 +9,7 @@ sys.path.insert(0,'/home/ecd353/NLP_project/')
 
 import comet_ml
 from comet_ml import Experiment
+comet = Experiment(api_key="uQuKaohh924bv3c68Jhyumhw7", log_code=True)
 
 # In[421]:
 
@@ -37,35 +38,36 @@ indexing['UNK'] = len(alphabet)
 indexing['No_letter'] = 0
 
 
-# In[408]:
-
-l0 = 1014
-
-
-# In[354]:
-
-## generate dataset
-print("generating dataset")
-data_path='/home/ecd353/NLP_project/data/'
-training_set, validation_set = dataGenerator( binary=True, max_length=l0)
-test_set = dataGeneratorTest(binary=True, max_length=l0)
-print("generating dataset done")
 
 
 # In[437]:
 
 # Hyper Parameters
 
-alphabet_size = 94
+
+hyper_params = {'learning_rate': 0.0001, 
+		'alphabet_size': 94, 
+		'dropout_rate': 0.5,
+		'l0': 1014 }
+
+
+comet.log_multiple_params(hyper_params)
+
 nb_classes = 2
 batch_size = 128
 
-learning_rate = 0.0001
 num_epochs = 20
 save_path = '/home/ecd353/NLP_project/experiments/exp2_best.pth.tar'
 
+## generate dataset
+print("generating dataset")
+data_path='/home/ecd353/NLP_project/data/'
+training_set, validation_set = dataGenerator(binary=True, max_length=hyper_params['l0'])
+test_set = dataGeneratorTest(binary=True, max_length=hyper_params['l0'])
+print("generating dataset done")
+
 # Build, initialize model
-model = Char_CNN_Small.Char_CNN_Small(l0, alphabet_size, nb_classes, batch_size)
+model = Char_CNN_Small.Char_CNN_Small(hyper_params['l0'], hyper_params['alphabet_size'], hyper_params['dropout_rate'], nb_classes, batch_size)
 model.init_weights()
 model.cuda()
 
@@ -73,7 +75,7 @@ model.cuda()
 loss = nn.BCELoss()
 loss = loss.cuda()
 
-optimizer = torch.optim.Adam(model.parameters(),lr=learning_rate)
+optimizer = torch.optim.Adam(model.parameters(),lr=hyper_params['learning_rate'])
 
 # In[438]:
 
@@ -85,21 +87,21 @@ print(model)
 # Train the model
 training_iter = data_iter(training_set, batch_size)
 train_eval_iter = eval_iter(training_set[:256], batch_size)
-validation_iter = eval_iter(validation_set[:128], batch_size)
+validation_iter = eval_iter(validation_set, batch_size)
 
 total_batches = int(len(training_set) / batch_size)
 #total_batches = 100
 
 
 # In[441]:
-comet = Experiment(api_key="uQuKaohh924bv3c68Jhyumhw7", log_code=True)
+
 
 tls.training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, model, loss, optimizer, 
               training_iter, validation_iter, train_eval_iter, save_path, comet, cuda=True)
 
 tls.load_checkpoint(model, save_path)
 test_iter = test_iter(test_set, batch_size)
-test = tls.evaluate(model, test_iter, batch_size, alphabet_size, l0, cuda=True)
+test = tls.evaluate(model, test_iter, batch_size, hyper_params['alphabet_size'], hyper_params['l0'], cuda=True)
 print("Final test accuracy :  %f" %(test_acc))
 # In[ ]:
 

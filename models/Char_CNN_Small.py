@@ -6,7 +6,8 @@ class Char_CNN_Small(nn.Module):
     def __init__(self,
                  l0,
                  alphabet_size,
-                 nb_classes,
+               	 dropout_rate,
+		 nb_classes,
                  batch_size,
                  ):
         super(Char_CNN_Small,self).__init__()
@@ -16,7 +17,7 @@ class Char_CNN_Small(nn.Module):
         self.l0 = l0
         self.max_pool = nn.MaxPool1d(3)
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(dropout_rate)
                 
         self.conv1 = nn.Conv1d(self.alphabet_size,256,7)
         self.conv2 = nn.Conv1d(256,256,7)
