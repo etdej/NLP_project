@@ -56,7 +56,7 @@ comet.log_multiple_params(hyper_params)
 nb_classes = 2
 batch_size = 128
 
-num_epochs = 20
+num_epochs = 2
 save_path = '/home/ecd353/NLP_project/experiments/exp2_best.pth.tar'
 
 ## generate dataset
@@ -96,7 +96,7 @@ total_batches = int(len(training_set) / batch_size)
 # In[441]:
 
 
-tls.training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, model, loss, optimizer, 
+tls.training_loop(batch_size, total_batches, hyper_params['alphabet_size'], hyper_params['l0'], num_epochs, model, loss, optimizer, 
               training_iter, validation_iter, train_eval_iter, save_path, comet, cuda=True)
 
 
@@ -104,7 +104,7 @@ tls.training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
 tls.load_checkpoint(model, save_path)
 
 test_set = dataGeneratorTest(file_name=data_path+'test.txt', max_length=hyper_params['l0'])
-test_iter = test_iter(test_set, batch_size)
+test_iter = eval_iter(test_set, batch_size)
 test = tls.evaluate(model, test_iter, batch_size, hyper_params['alphabet_size'], hyper_params['l0'], cuda=True)
 print("Final test accuracy :  %f" %(test_acc))
 

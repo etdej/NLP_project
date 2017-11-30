@@ -132,7 +132,6 @@ def dataGenerator(file_name='train.txt',train_split=0.8,binary=True, max_length=
     dataset = []
     with open(file_name) as infile:
         while True: 
-            counter+=1
             rev=infile.readline() 
             if len(rev)==0:
                 break
