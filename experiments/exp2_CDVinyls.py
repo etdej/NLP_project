@@ -26,22 +26,6 @@ from os.path import isfile, join
 from sklearn.model_selection import train_test_split
 from numpy import random
 
-# In[423]:
-
-alphabet = [' ','a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v' ,'w', 'x', 'y', 'z', '0', '1', '2','3', '4', '5', '6', '7','8','9','-', ';', '.', '!', '?', ':',
-            '\'', '\\', '|', '_', '@', '#', '$', '%', '\^', '&', '*','\'', '\~', '+', '-', '=', '<', '>','(', ')',
-            '[',']', '{', '}']
-
-indexing = { letter : i+1 for i, letter in enumerate(alphabet)}
-indexing['UNK'] = len(alphabet)
-indexing['No_letter'] = 0
-
-
-
-
-# In[437]:
-
 # Hyper Parameters
 
 
