@@ -117,7 +117,7 @@ def createFiles(file_name='review.txt', batch_size=0,total_size=398000,train_pro
                 
                 
                 
-def dataGenerator(file_name='train.txt',train_split=0.8,binary=False, max_length=1014, indexing_choice=0):
+def dataGenerator(file_name='train.txt',train_split=0.8,binary=True, max_length=1014, indexing_choice=0):
     
     if(indexing_choice==0):
         index = indexing
@@ -167,7 +167,7 @@ def dataGenerator(file_name='train.txt',train_split=0.8,binary=False, max_length
     return dataset_train, dataset_val
 
 
-def dataGeneratorTest (file_name='test.txt',binary=False, max_length=1014, indexing_choice=0):
+def dataGeneratorTest (file_name='test.txt',binary=True, max_length=1014, indexing_choice=0):
     
     if(indexing_choice==0):
         index = indexing
