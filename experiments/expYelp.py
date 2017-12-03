@@ -15,7 +15,7 @@ comet = Experiment(api_key="uQuKaohh924bv3c68Jhyumhw7", log_code=True)
 
 import torch.nn as nn
 import torch
-from data_processing.extract2 import *
+from data_processing.extractYelp import *
 from models import Char_CNN_Small
 from models import tools as tls
 import numpy as np
@@ -40,7 +40,7 @@ comet.log_multiple_params(hyper_params)
 nb_classes = 2
 batch_size = 128
 
-num_epochs = 20
+num_epochs = 25
 save_path = '/home/ecd353/NLP_project/experiments/exp2_best.pth.tar'
 
 ## generate dataset
