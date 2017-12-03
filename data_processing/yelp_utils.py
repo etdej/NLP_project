@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from numpy import random
 import torch
 import re
+from langdetect import detect
 import random
 
 
@@ -33,6 +34,109 @@ bigIndexing.update(indexing)
 altIndexing.update(indexing)
 
 
+def shuffle(): 
+    with open('review.txt','r') as source:
+        data = [ (random.random(), line) for line in source ]
+    data.sort()
+    with open('review_shuffle.txt','w') as target:
+        for _, line in data:
+            target.write( line )
+
+def createFiles(file_name='review_shuffle.txt', batch_size=0,total_size=398000,train_proportion=360/398): 
+    file_object = open(file_name,"r")
+    counter =0
+    counter_pos=0
+    counter_neg=0
+    train_size=(int)(train_proportion*total_size)
+    test_size= total_size - train_size
+    print(test_size)
+    print(train_size)
+    
+    file_train=open("train.txt","w")
+    file_test=open("test.txt","w")
+
+    with open(file_name) as infile:
+        while(counter<train_size):
+            text = infile.readline()
+            
+            if len(text)==0: 
+                print('break')
+                break
+            
+            
+            info=json.loads(text)
+            rating = info['stars']
+            review = info['text']
+            item={}
+            item['review']=review
+            binary=int(rating>3)
+            item['rating']=binary
+            
+            
+            try:
+                language = detect(review)
+                
+            except: 
+                print('failure to detect language')
+                continue
+            
+            if(language!='en'):
+                print(detect(review))
+                continue
+            
+            if(binary==0 and counter_neg<train_size/2):
+                json.dump(item,file_train)
+                file_train.write('\n')
+                counter_neg+=1
+                counter+=1
+                print(counter)
+                
+            elif(binary==1 and counter_pos < train_size/2):
+                json.dump(item,file_train)
+                file_train.write('\n')
+                counter_pos+=1
+                counter+=1
+                print(counter)
+                
+        file_train.close()       
+        counter=0
+        counter_neg=0
+        counter_pos=0
+        
+        while(counter<test_size):
+            text = infile.readline()
+            if len(text)==0: 
+                print('break')
+                break
+            info=json.loads(text)
+            rating = info["stars"]
+            review = info["text"]
+            item={}
+            item["review"]=review
+            binary=int(rating<4)
+            item["rating"]=binary
+            
+            if(detect(review)!='en'):
+                print(detect(review))
+                continue
+            
+            if(binary==0 and counter_neg<test_size/2):
+                json.dump(item,file_test)
+                file_test.write('\n')
+                counter_neg+=1
+                counter+=1
+                
+            if(binary==1 and counter_pos < test_size/2):
+                json.dump(item,file_test)
+                file_test.write('\n')
+                counter_pos+=1
+                counter+=1
+                
+                
+        file_test.close()
+                
+                
+                
 def dataGenerator(file_name, test=False,train_split=0.8, max_length=1014, indexing_choice=0):
     
     if(indexing_choice==0):

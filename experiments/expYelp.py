@@ -87,7 +87,7 @@ tls.training_loop(batch_size, total_batches, hyper_params['alphabet_size'], hype
 # Loading best model and calculating accuracy on test set
 tls.load_checkpoint(model, save_path)
 
-test_set = dataGeneratorTest(file_name=data_path+'test.txt', max_length=hyper_params['l0'])
+test_set = dataGenerator(data_path+'test.txt', test=True, max_length=hyper_params['l0'])
 test_iter = eval_iter(test_set, batch_size)
 test_acc = tls.evaluate(model, test_iter, batch_size, hyper_params['alphabet_size'], hyper_params['l0'], cuda=True)
 print("Final test accuracy :  %f" %(test_acc))
