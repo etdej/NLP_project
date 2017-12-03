@@ -176,7 +176,7 @@ def dataGenerator(file_name='../data/train.txt',train_split=0.8,binary=True, max
     print("end encoding training")
     #random split 0.8 / 0.2
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
-    alphabet_size = max(index.values())
+    alphabet_size = max(index.values())+1
     return dataset_train, dataset_val,list_subword_witout_end,alphabet_size
 
 def dataGeneratorTest(list_subword_without_end,file_name='../data/test.txt', binary=True, max_length=1014, indexing_choice=0):  
