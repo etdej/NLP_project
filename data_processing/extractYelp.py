@@ -5,7 +5,6 @@ Created on Wed Nov 29 16:31:49 2017
 
 @author: saad
 """
-
 import numpy as np 
 import os
 import json
@@ -172,45 +171,6 @@ def dataGenerator(file_name, test=False,train_split=0.8, max_length=1014, indexi
                     review[i] = index['UNK']
         
             dataset.append({'review': review, 'rating':torch.IntTensor([rating])})
-        
-    #random split 0.8 / 0.2
-    dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
-
-    return dataset_train, dataset_val
-
-
-def dataGeneratorTest (file_name='test.txt',binary=True, max_length=1014, indexing_choice=0):
-    
-    if(indexing_choice==0):
-        index = indexing
-    if(indexing_choice==1):
-        index = bigIndexing
-    if(indexing_choice==2):
-        index = altIndexing
-        
-    dataset = []
-    with open(file_name) as infile:
-        while True: 
-            rev=infile.readline() 
-            
-            if len(rev)==0:
-                break
-                
-            data = re.split('reviewInfo: ',rev)[1]
-            
-            rev=infile.readline()
-            
-            rating = float(re.split('ratingInfo:',rev)[1])
-            
-            if(binary):
-                if(rating<4):
-                    rating=0
-                else:
-                    rating=1
-            else:
-                rating= int(rating) -1
-                
-            review = torch.zeros(max_length).long()
             
     #random split 0.8 / 0.2
     if test:
@@ -268,5 +228,3 @@ if __name__ == '__main__':
     print("length training_set : ", len(training_set))
     print("length validation_set : ", len(validation_set))
     print("length test_set : ", len(test_set))
-                
-        
