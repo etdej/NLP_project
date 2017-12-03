@@ -6,7 +6,7 @@ Created on Mon Nov 27 17:22:59 2017
 @author: saad
 """
 
-import numpy as np 
+import numpy as np
 import os
 from os import listdir
 from os.path import isfile, join
@@ -34,7 +34,7 @@ altIndexing.update(indexing)
 def getAlphabetLength():
     return 0
 
-def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000): 
+def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
     file_object = open(file_name,"r")
     counter =0
     counter_pos=0
@@ -43,24 +43,24 @@ def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
     test_size= total_size - train_size
     file_train=open("train.txt","w")
     file_test=open("test.txt","w")
-    
+
 
     with open(file_name) as infile:
         while(counter<train_size):
             text = infile.readline()
-            if len(text)==0: 
+            if len(text)==0:
                 break
             liste = re.split('"reviewText":',text)
             parts= re.split(', "overall": ',liste[1])
-            
+
             review = parts[0]
             rating = float(re.split(',',parts[1])[0])
-            
+
             binary =1
-            
-            if(rating<4): 
+
+            if(rating<4):
                 binary=0
-            
+
             if(binary==0 and counter_neg<train_size/2):
                 file_train.write('reviewInfo: ')
                 file_train.write(review)
@@ -69,7 +69,7 @@ def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
                 file_train.write('\n')
                 counter_neg+=1
                 counter+=1
-                
+
             if(binary==1 and counter_pos < train_size/2):
                 file_train.write('reviewInfo: ')
                 file_train.write(review)
@@ -78,26 +78,26 @@ def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
                 file_train.write('\n')
                 counter_pos+=1
                 counter+=1
-                
+
         counter=0
         counter_neg=0
         counter_pos=0
-        
+
         while(counter<test_size):
             text = infile.readline()
-            if len(text)==0: 
+            if len(text)==0:
                 break
             liste = re.split('"reviewText":',text)
             parts= re.split(', "overall": ',liste[1])
             review = parts[0]
             rating = float(re.split(',',parts[1])[0])
-            
+
             binary =1
-            
-            if(rating<4): 
+
+            if(rating<4):
                 binary=0
-            
-            
+
+
             if(binary==0 and counter_neg<test_size/2):
                 file_test.write('reviewInfo: ')
                 file_test.write(review)
@@ -106,7 +106,7 @@ def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
                 file_test.write('\n')
                 counter_neg+=1
                 counter+=1
-                
+
             if(binary==1 and counter_pos < test_size/2):
                 file_test.write('reviewInfo: ')
                 file_test.write(review)
@@ -115,32 +115,32 @@ def createFiles(file_name='Books_5.txt', batch_size=0,total_size=1000000):
                 file_test.write('\n')
                 counter_pos+=1
                 counter+=1
-                
-        
-    
-    
+
+
+
+
 def dataGenerator(file_name='train.txt',train_split=0.8,binary=True, max_length=1014, indexing_choice=0):
-    
+
     if(indexing_choice==0):
         index = indexing
     if(indexing_choice==1):
         index = bigIndexing
     if(indexing_choice==2):
         index = altIndexing
-        
-        
+
+
     dataset = []
     with open(file_name) as infile:
-        while True: 
-            rev=infile.readline() 
+        while True:
+            rev=infile.readline()
             if len(rev)==0:
                 break
             liste = re.split('ratingInfo: ',rev)
             data = re.split('reviewInfo: ',liste[0])
-            
+
             data=data[1]
             rating = float(liste[1])
-            
+
             if(binary):
                 if(rating<4):
                     rating=0
@@ -148,20 +148,20 @@ def dataGenerator(file_name='train.txt',train_split=0.8,binary=True, max_length=
                     rating=1
             else:
                 rating= int(rating) -1
-                
+
             review = torch.zeros(max_length).long()
-            
-            
+
+
             for i in range(min(max_length,len(data))):
                 letter = data[i].lower()
-                
+
                 if letter in alphabet:
                     review[i] = index[letter]
                 else:
                     review[i] = index['UNK']
 
             dataset.append({'review': review, 'rating':torch.IntTensor([rating])})
-        
+
     #random split 0.8 / 0.2
     dataset_train, dataset_val =  train_test_split(dataset, test_size=1-train_split)
 
@@ -169,28 +169,28 @@ def dataGenerator(file_name='train.txt',train_split=0.8,binary=True, max_length=
 
 
 def dataGeneratorTest (file_name='test.txt', binary=True, max_length=1014, indexing_choice=0):
-    
+
     if(indexing_choice==0):
         index = indexing
     if(indexing_choice==1):
         index = bigIndexing
     if(indexing_choice==2):
         index = altIndexing
-        
+
     dataset = []
     with open(file_name) as infile:
-        while True: 
-            rev=infile.readline() 
-            
+        while True:
+            rev=infile.readline()
+
             if len(rev)==0:
                 break
-                
+
             liste = re.split('ratingInfo: ',rev)
             data = re.split('reviewInfo: ',liste[0])
-            
+
             data=data[1]
             rating = float(liste[1])
-            
+
             if(binary):
                 if(rating<4):
                     rating=0
@@ -198,20 +198,20 @@ def dataGeneratorTest (file_name='test.txt', binary=True, max_length=1014, index
                     rating=1
             else:
                 rating= int(rating) -1
-                
+
             review = torch.zeros(max_length).long()
-            
-            
+
+
             for i in range(min(max_length,len(data))):
                 letter = data[i].lower()
-                
+
                 if letter in alphabet:
                     review[i] = index[letter]
                 else:
                     review[i] = index['UNK']
 
             dataset.append({'review': review, 'rating':torch.IntTensor([rating])})
-        
+
 
     return dataset
 
@@ -232,7 +232,7 @@ def data_iter(dataset, batch_size=32):
             random.shuffle(order)
         batch_indices = order[start:start + batch_size]
         yield [dataset[index] for index in batch_indices]
-        
+
 
 # This is the iterator we use when we're evaluating our model.
 # It gives a list of batches that you can then iterate through.
@@ -261,4 +261,3 @@ if __name__ == '__main__':
     print("length training_set : ", len(training_set))
     print("length validation_set : ", len(validation_set))
     print("length test_set : ", len(test_set))
-    

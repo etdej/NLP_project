@@ -24,14 +24,14 @@ def evaluate(model, data_iter, batch_size, alphabet_size, l0, cuda=False):
         one_hot = torch.FloatTensor(batch_size, alphabet_size, l0).zero_()
         one_hot.scatter_(1, vectors_, 1)
         vectors = Variable(one_hot)
-		                
+
         labels = Variable(torch.stack(labels).squeeze())
 
 	if cuda:
 	    vectors = vectors.cuda()
-	    
+
         output = model(vectors)
-        
+
 #        print(vectors.data.numpy().sum(axis=2))
         #_, predicted = torch.max(output, 1)
 	if cuda:
@@ -64,7 +64,7 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
         one_hot.scatter_(1, vectors_, 1)
 
         vectors = Variable(one_hot) # batch_size, seq_len
-        
+
         labels = torch.stack(labels)
 
         labels = Variable(labels.squeeze()).float()
@@ -74,14 +74,14 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
 	   vectors = vectors.cuda()
            labels = labels.float().cuda()
         output = model(vectors)
-        
+
         lossy = loss_(output.squeeze(), labels)
         #print(lossy.data[0])
-        
-        if comet_exp:
-            comet_exp.log_metric("loss", lossy.cpu().data.numpy().mean()) 
 
-        
+        if comet_exp:
+            comet_exp.log_metric("loss", lossy.cpu().data.numpy().mean())
+
+
         lossy.backward()
 
         optim.step()
@@ -96,15 +96,15 @@ def training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
             print("Epoch %i; Step %i; Loss %f; Train acc: %f; Dev acc %f"
                       %(epoch, step, lossy.cpu().data[0], val_train, val_val))
             if val_val > best_val:
-		best_val = val_val 
+		best_val = val_val
 		state = {
       		      'epoch': epoch,
                       'state_dict': model.state_dict(),
             	      'best_prec1': best_val,
                       'optimizer' : optim.state_dict(),
         	}
-		
+
 		torch.save(state, save_file)
-            
+
             epoch += 1
         step += 1
