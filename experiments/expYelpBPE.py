@@ -27,17 +27,17 @@ nb_classes = 2
 batch_size = 256
 
 nb_merge = 100
-l0 = 1014
+l0 = 933
 dropout_rate = 0.5
 learning_rate = 0.0001
 
-num_epochs = 20
+num_epochs = 15
 save_path = '/home/rns365/NLP_project/experiments/expBooksBPE_best.pth.tar'
 
 ## generate dataset
-print("generating dataset")
+print("generating dataset Yelp")
 data_path='/home/rns365/NLP_project/data/'
-training_set, validation_set,list_subword_without_end,alphabet_size = dataGenerator(nb_merge=nb_merge, file_name=data_path+'trainYelp.txt', max_length=l0)
+training_set, validation_set,list_subword_without_end,alphabet_size = dataGenerator(nb_merge=nb_merge, file_name=data_path+'trainYelp2.txt', max_length=l0)
 
 hyper_params = {'learning_rate': learning_rate, 
         'alphabet_size': alphabet_size, 
@@ -74,7 +74,7 @@ tls.training_loop(batch_size, total_batches, alphabet_size, l0, num_epochs, mode
 # Loading best model and calculating accuracy on test set
 tls.load_checkpoint(model, save_path)
 
-test_set = dataGeneratorTest(list_subword_without_end,file_name=data_path+'test.txt', max_length=l0)
+test_set = dataGeneratorTest(list_subword_without_end,file_name=data_path+'testYelp2.txt', max_length=l0)
 test_iter = eval_iter(test_set, batch_size)
 test_acc = tls.evaluate(model, test_iter, batch_size, alphabet_size, l0, cuda=True)
 print("Final test accuracy :  %f" %(test_acc))
