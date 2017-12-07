@@ -31,11 +31,11 @@ nb_classes = 2
 batch_size = 256
 
 nb_merge = 100
-l0 = 1014
+l0 = 933
 dropout_rate = 0.5
 learning_rate = 0.0001
 
-num_epochs = 20
+num_epochs = 15
 
 save_model_path = '/home/rns365/NLP_project/experiments/save/models/exp'+str(exp_id)+'_best.pth.tar'
 save_pred_path = '/home/rns365/NLP_project/experiments/save/predictions/exp'+str(exp_id)+'.txt'
@@ -44,7 +44,7 @@ hyper_params = {'learning_rate': learning_rate}
 hyper_params.update(all_hyp[exp_id])
 
 ## generate dataset
-print("generating dataset")
+print("generating dataset Yelp")
 data_path='/home/rns365/NLP_project/data/'
 training_set, validation_set,list_subword_without_end,alphabet_size = dataGenerator(nb_merge=hyper_params['nb_merge'], file_name=data_path+'trainYelp.txt', max_length=hyper_params['l0'])
 
