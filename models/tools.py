@@ -12,10 +12,13 @@ def get_batch(batch):
         labels.append(dict["rating"])
     return vectors, labels
 
-def evaluate(model, data_iter, batch_size, alphabet_size, l0, cuda=False):
+def evaluate(model, data_iter, batch_size, alphabet_size, l0, cuda=False, save_pred_file=None):
     model.eval()
     correct = 0
     total = 0
+    if save_pred_file:
+	save_file = open(save_pred_file, 'w')
+
     for i in range(len(data_iter)):
         vectors, labels = get_batch(data_iter[i])
 
@@ -41,7 +44,13 @@ def evaluate(model, data_iter, batch_size, alphabet_size, l0, cuda=False):
 
         total += len(labels)
         correct += np.equal(np.squeeze(predicted.numpy()), labels.data.numpy()).sum()
-
+	
+	if save_pred_file:
+	    for label in labels.data.numpy():
+		save_file.write(str(label)+'\n')
+    
+    if save_pred_file:
+	save_file.close()
     return correct / float(total)
 
 def load_checkpoint(model, save_path):
