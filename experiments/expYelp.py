@@ -28,13 +28,13 @@ from numpy import random
 
 # Hyper Parameters
 
-exp_index = 2
+exp_index = -2
 
-dict_hyper_params = {0: {'dropout': 0.45, 'l0': 636}, 1: {'dropout': 0.33, 'l0': 663}, 2: {'dropout': 0.66, 'l0': 528}} 
+dict_hyper_params = {-2: {'dropout': 0.5119303689409218, 'l0': 1338}, -1:{'dropout': 0.5, 'l0': 1014}, 0: {'dropout': 0.45, 'l0': 636}, 1: {'dropout': 0.33, 'l0': 663}, 2: {'dropout': 0.66, 'l0': 528}} 
 
 hyper_params = {'learning_rate': 0.0001, 
 		'alphabet_size': 94}
-hyper_params.update(dict_hyper_params[0])
+hyper_params.update(dict_hyper_params[exp_index])
 
 
 comet.log_multiple_params(hyper_params)
@@ -86,7 +86,7 @@ tls.training_loop(batch_size, total_batches, hyper_params['alphabet_size'], hype
 
 
 # Loading best model and calculating accuracy on test set
-tls.load_checkpoint(model, save_path)
+tls.load_checkpoint(model, save_model_path)
 
 test_set = dataGenerator(data_path+'test.txt', test=True, max_length=hyper_params['l0'])
 test_iter = eval_iter(test_set, batch_size)
